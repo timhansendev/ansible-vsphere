@@ -1,5 +1,5 @@
 ---
 - name: Create Dev RHEL7 Host on VMWare 
-  hosts: all
+  hosts: localhost
   roles:
     - role: vmware
