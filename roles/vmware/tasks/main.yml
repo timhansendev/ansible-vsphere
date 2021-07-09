@@ -1,0 +1,53 @@
+---
+- name: Clone the template
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    name: RHEL7_AnsibleHost1
+    template: RHEL7_Template
+    datacenter: "{{ datacenter_name }}"
+    state: poweredon
+    folder: /
+    cluster: "{{ cluster_name }}"
+    wait_for_ip_address: yes
+
+- name: Get category ID for "All objects"
+  vmware_category:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    category_name: "All objects"
+  register: catid
+
+- name: Create a tag
+  vmware_tag:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    tag_name: "{{ item.name }}"
+    category_id: "{{ catid.category_results.category_id }}"
+    tag_description: "{{ item.description }}"
+    state: present
+  with_items:
+    - { name: development, description: "Development instance, no SLA" }
+    - { name: rhel7, description: "RHEL7 OS" }
+
+- name: Get info about tag
+  vmware_tag_info:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+
+- name: Add RHEL7 and Development Tags onto Virtual Machine
+  vmware_tag_manager:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    tag_names:
+      - development
+      - rhel7
+    object_name: RHEL7_AnsibleHost1
+    object_type: VirtualMachine
+    state: add
