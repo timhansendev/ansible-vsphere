@@ -1,4 +1,16 @@
 ---
+- name: Debug Hostname 
+  debug:
+    var: "{{ vcenter_hostname }}"
+
+- name: Debug Username
+  debug:
+    var: "{{ vcenter_username }}"
+
+- name: Debug Pass
+  debug:
+    var: "{{ vcenter_password }}"
+
 - name: Clone the template
   vmware_guest:
     hostname: "{{ vcenter_hostname }}"
