@@ -1,5 +1,5 @@
 
-vcenter_hostname: vsphere.dev.lan
+vcenter_hostname: 192.168.0.190
 vcenter_username: ansible@vsphere.dev.lan
 vcenter_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
