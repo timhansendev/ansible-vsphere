@@ -3,5 +3,5 @@ strict: False
 hostname: lookup('env', 'VMWARE_HOST')
 username: lookup('env', 'VMWARE_USER')
 password: lookup('env', 'VMWARE_PASSWORD')
-validate_certs: true
+validate_certs: false
 with_tags: true
