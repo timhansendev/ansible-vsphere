@@ -1,0 +1,32 @@
+- name: Clone the template to create VM's
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    name: "{{ item }}"
+    template: rhel8-template
+    datacenter: "{{ datacenter_name }}"
+    state: poweredon
+    folder: /
+    cluster: "{{ cluster_name }}"
+  delegate_to: localhost
+  async: 1800
+  poll: 2
+  tags: [never, deploy]
+
+- name: Add RHEL8 and Development Tags onto Virtual Machines
+  vmware_tag_manager:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    tag_names:
+      - development
+      - rhel8
+    object_name: "{{ item }}"
+    object_type: VirtualMachine
+    state: add
+  delegate_to: localhost
+  async: 1800
+  poll: 2
+  tags: [never, deploy]

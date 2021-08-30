@@ -1,0 +1,25 @@
+- name: Delete RHEL8 VMs
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    name: "{{ item }}"
+    state: poweredoff
+  delegate_to: localhost
+  async: 1800
+  poll: 2
+  tags: [never, delete]
+
+- name: Delete RHEL8 VMs
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    name: "{{ item }}"
+    state: absent
+  delegate_to: localhost
+  async: 1800
+  poll: 2
+  tags: [never, delete]

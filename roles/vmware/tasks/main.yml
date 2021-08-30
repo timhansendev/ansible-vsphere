@@ -2,83 +2,22 @@
 - name: Create Tags
   include_tasks: create_tags.yml
 
-- name: Clone the template to create VM's
-  vmware_guest:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    validate_certs: False
-    name: "{{ item }}"
-    template: rhel8-template
-    datacenter: "{{ datacenter_name }}"
-    state: poweredon
-    folder: /
-    cluster: "{{ cluster_name }}"
-    customization:
-      hostname: "{{ item }}"
-      dns_servers: ["192.168.0.1", "1.1.1.1"]
-  delegate_to: localhost
-  loop: 
-    - "dev-rhel8-1"
-    - "dev-rhel8-2"
-    - "dev-rhel8-3"
-  async: 1800
-  poll: 2
+- name: Create VM's
+  include_tasks: create_vm.yml
+  loop:
+    - dev-rhel8-1
+    - dev-rhel8-2
+    - dev-rhel8-3
   tags: [never, deploy]
 
-- name: Add RHEL8 and Development Tags onto Virtual Machines
-  vmware_tag_manager:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    tag_names:
-      - development
-      - rhel8
-    object_name: "{{ item }}"
-    object_type: VirtualMachine
-    state: add
-  delegate_to: localhost
-  loop: 
-    - "dev-rhel8-1"
-    - "dev-rhel8-2"
-    - "dev-rhel8-3"
-  async: 1800
-  poll: 2
-  tags: [never, deploy]
-
-- name: Delete RHEL8 VMs
-  vmware_guest:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    validate_certs: False
-    name: "{{ item }}"
-    state: poweredoff
-  delegate_to: localhost
-  loop: 
-    - "dev-rhel8-1"
-    - "dev-rhel8-2"
-    - "dev-rhel8-3"
-  async: 1800
-  poll: 2
-  tags: [never, delete]
-
-- name: Delete RHEL8 VMs
-  vmware_guest:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    validate_certs: False
-    name: "{{ item }}"
-    state: absent
-  delegate_to: localhost
-  loop: 
-    - "dev-rhel8-1"
-    - "dev-rhel8-2"
-    - "dev-rhel8-3"
-  async: 1800
-  poll: 2
+- name: Delete VM's
+  include_tasks: create_vm.yml
+  loop:
+    - dev-rhel8-1
+    - dev-rhel8-2
+    - dev-rhel8-3
   tags: [never, delete]
 
 - name: Create snapshots
   include_tasks: snapshot.yml
+  tags: [never, snapshot]
