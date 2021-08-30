@@ -14,6 +14,8 @@
     state: poweredon
     folder: /
     cluster: "{{ cluster_name }}"
+    async: 1800
+    poll: 0
   delegate_to: localhost
   loop: 
     - "dev-rhel8-1"
@@ -31,6 +33,8 @@
     object_name: "{{ item }}"
     object_type: VirtualMachine
     state: add
+    async: 1800
+    poll: 0
   delegate_to: localhost
   loop: 
     - "dev-rhel8-1"
