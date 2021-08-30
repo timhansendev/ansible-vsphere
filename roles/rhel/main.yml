@@ -1,0 +1,8 @@
+---
+- name: Ensure node is subscribed
+  redhat_subscription: 
+    state: present
+    org_id: "{{ org }}"
+    activationkey: "{{ activationkey }}"
+    auto_attach: true
+  tags: [never, rhel]

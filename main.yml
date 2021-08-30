@@ -2,4 +2,5 @@
 - name: VMware playbook
   hosts: all
   roles:
-    - role: vmware
+    - vmware
+    - rhel
