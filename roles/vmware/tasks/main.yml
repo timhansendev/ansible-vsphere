@@ -14,7 +14,6 @@
     state: poweredon
     folder: /
     cluster: "{{ cluster_name }}"
-    wait_for_ip_address: yes
   delegate_to: localhost
   loop: 
     - "dev-rhel8-1"
