@@ -14,6 +14,9 @@
     state: poweredon
     folder: /
     cluster: "{{ cluster_name }}"
+    customization:
+      hostname: "{{ item }}"
+      dns_servers: ["192.168.0.1", "1.1.1.1"]
   delegate_to: localhost
   loop: 
     - "dev-rhel8-1"
