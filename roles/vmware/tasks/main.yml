@@ -14,13 +14,13 @@
     state: poweredon
     folder: /
     cluster: "{{ cluster_name }}"
-    async: 1800
-    poll: 0
   delegate_to: localhost
   loop: 
     - "dev-rhel8-1"
     - "dev-rhel8-2"
     - "dev-rhel8-3"
+  async: 1800
+  poll: 0
   tags: [never, deploy]
 
 - name: Add RHEL8 and Development Tags onto Virtual Machines
@@ -34,14 +34,31 @@
     object_name: "{{ item }}"
     object_type: VirtualMachine
     state: add
-    async: 1800
-    poll: 0
   delegate_to: localhost
   loop: 
     - "dev-rhel8-1"
     - "dev-rhel8-2"
     - "dev-rhel8-3"
+  async: 1800
+  poll: 0
   tags: [never, deploy]
+
+- name: Delete RHEL8 VMs
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    name: "{{ item }}"
+    state: poweroff
+  delegate_to: localhost
+  loop: 
+    - "dev-rhel8-1"
+    - "dev-rhel8-2"
+    - "dev-rhel8-3"
+  async: 1800
+  poll: 0
+  tags: [never, delete]
 
 - name: Delete RHEL8 VMs
   vmware_guest:
@@ -56,4 +73,6 @@
     - "dev-rhel8-1"
     - "dev-rhel8-2"
     - "dev-rhel8-3"
+  async: 1800
+  poll: 0
   tags: [never, delete]
