@@ -13,7 +13,6 @@
   delegate_to: localhost
   async: 1800
   poll: 2
-  tags: [never, deploy]
 
 - name: Add RHEL8 and Development Tags onto Virtual Machines
   vmware_tag_manager:
@@ -29,4 +28,3 @@
   delegate_to: localhost
   async: 1800
   poll: 2
-  tags: [never, deploy]
