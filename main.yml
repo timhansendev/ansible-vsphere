@@ -1,5 +1,5 @@
 ---
-- name: Create 3 RHEL 8 Hosts on VSphere
+- name: VMware playbook
   hosts: all
   roles:
     - role: vmware
