@@ -1,11 +1,14 @@
 ---
-- name: Clone the template
+- name: Create Tags
+  include_tasks: create_tags.yml
+
+- name: Clone the template to create VM's
   vmware_guest:
     hostname: "{{ vcenter_hostname }}"
     username: "{{ vcenter_username }}"
     password: "{{ vcenter_password }}"
     validate_certs: False
-    name: dev-rhel8-ha-1
+    name: "{{ item }}"
     template: rhel8-template
     datacenter: "{{ datacenter_name }}"
     state: poweredon
@@ -13,46 +16,24 @@
     cluster: "{{ cluster_name }}"
     wait_for_ip_address: yes
   delegate_to: localhost
+  loop: 
+    - "dev-rhel8-1"
+    - "dev-rhel8-2"
+    - "dev-rhel8-3"
 
-- name: Get category ID for "All objects"
-  vmware_category:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    category_name: "All objects"
-  register: catid
-  delegate_to: localhost
-
-- name: Create a tag
-  vmware_tag:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    tag_name: "{{ item.name }}"
-    category_id: "{{ catid.category_results.category_id }}"
-    tag_description: "{{ item.description }}"
-    state: present
-  with_items:
-    - { name: development, description: "Development instance, no SLA" }
-    - { name: rhel7, description: "RHEL7 OS" }
-  delegate_to: localhost
-
-- name: Get info about tag
-  vmware_tag_info:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-  delegate_to: localhost
-
-- name: Add RHEL7 and Development Tags onto Virtual Machine
+- name: Add RHEL8 and Development Tags onto Virtual Machines
   vmware_tag_manager:
     hostname: "{{ vcenter_hostname }}"
     username: "{{ vcenter_username }}"
     password: "{{ vcenter_password }}"
     tag_names:
       - development
-      - rhel7
-    object_name: dev-rhel8-ha-1
+      - rhel8
+    object_name: "{{ item }}"
     object_type: VirtualMachine
     state: add
   delegate_to: localhost
+  loop: 
+    - "dev-rhel8-1"
+    - "dev-rhel8-2"
+    - "dev-rhel8-3"

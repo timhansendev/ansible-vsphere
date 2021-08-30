@@ -1,5 +1,5 @@
 ---
-- name: Create Dev RHEL7 Host on VMWare 
+- name: Create 3 RHEL 8 Hosts on VSphere
   hosts: all
   roles:
     - role: vmware
