@@ -1,0 +1,12 @@
+- name: Install nginx
+  yum:
+    name: nginx
+    state: latest
+  tags: [never, nginx]
+
+- name: Sysmted enable nginx
+  systemd:
+    name: nginx
+    state: started
+    enabled: true
+  tags: [never, nginx]
