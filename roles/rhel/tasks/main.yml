@@ -7,10 +7,3 @@
     auto_attach: true
   when: ansible_os_family == 'RedHat'
   tags: [never, rhel]
-
-- name: Register the insights client
-- include_role:
-    name: redhat.insights.insights_client
-  when: ansible_os_family == "RedHat"
-  tags: [never, rhel]
-    
