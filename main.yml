@@ -1,6 +1,8 @@
 ---
 - name: VMware playbook
   hosts: all
+  vars:
+    ansible_python_interpreter: '/usr/libexec/platform-python'
   roles:
     - vmware
     - rhel
