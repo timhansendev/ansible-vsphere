@@ -21,6 +21,7 @@
     - "dev-rhel8-1"
     - "dev-rhel8-2"
     - "dev-rhel8-3"
+  tags: [never, deploy]
 
 - name: Add RHEL8 and Development Tags onto Virtual Machines
   vmware_tag_manager:
@@ -40,3 +41,19 @@
     - "dev-rhel8-1"
     - "dev-rhel8-2"
     - "dev-rhel8-3"
+  tags: [never, deploy]
+
+- name: Delete RHEL8 VMs
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    name: "{{ item }}"
+    state: absent
+  delegate_to: localhost
+  loop: 
+    - "dev-rhel8-1"
+    - "dev-rhel8-2"
+    - "dev-rhel8-3"
+  tags: [never, delete]
