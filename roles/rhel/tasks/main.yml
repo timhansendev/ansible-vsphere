@@ -1,4 +1,5 @@
 ---
+
 - name: Ensure node is subscribed
   redhat_subscription: 
     state: present
@@ -8,15 +9,15 @@
   when: ansible_os_family == 'RedHat'
   tags: [never, rhel]
 
-- name: Install ngninx
+- name: Install nginx
   yum:
-    name: ngninx
+    name: nginx
     state: latest
   tags: [never, rhel]
 
 - name: Sysmted enable nginx
   systemd:
-    name: ngninx
+    name: nginx
     state: started
     enabled: true
   tags: [never, rhel]
