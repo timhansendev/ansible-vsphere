@@ -5,8 +5,8 @@
     username: "{{ vcenter_username }}"
     password: "{{ vcenter_password }}"
     validate_certs: False
-    name: RHEL7_AnsibleHost1
-    template: RHEL7_Template
+    name: dev-rhel8-ha-1
+    template: rhel8-template
     datacenter: "{{ datacenter_name }}"
     state: poweredon
     folder: /
@@ -48,6 +48,6 @@
     tag_names:
       - development
       - rhel7
-    object_name: RHEL7_AnsibleHost1
+    object_name: dev-rhel8-ha-1
     object_type: VirtualMachine
     state: add
