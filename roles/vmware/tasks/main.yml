@@ -50,7 +50,7 @@
     password: "{{ vcenter_password }}"
     validate_certs: False
     name: "{{ item }}"
-    state: poweroff
+    state: poweredoff
   delegate_to: localhost
   loop: 
     - "dev-rhel8-1"
