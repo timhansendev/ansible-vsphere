@@ -7,3 +7,16 @@
     auto_attach: true
   when: ansible_os_family == 'RedHat'
   tags: [never, rhel]
+
+- name: Install ngninx
+  yum:
+    name: ngninx
+    state: latest
+  tags: [never, rhel]
+
+- name: Sysmted enable nginx
+  systemd:
+    name: ngninx
+    state: started
+    enabled: true
+  tags: [never, rhel]

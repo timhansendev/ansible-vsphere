@@ -76,3 +76,6 @@
   async: 1800
   poll: 2
   tags: [never, delete]
+
+- name: Create snapshots
+  include_tasks: snapshot.yml
