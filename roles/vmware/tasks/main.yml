@@ -12,6 +12,7 @@
     folder: /
     cluster: "{{ cluster_name }}"
     wait_for_ip_address: yes
+  delegate_to: localhost
 
 - name: Get category ID for "All objects"
   vmware_category:
@@ -20,6 +21,7 @@
     password: "{{ vcenter_password }}"
     category_name: "All objects"
   register: catid
+  delegate_to: localhost
 
 - name: Create a tag
   vmware_tag:
@@ -33,12 +35,14 @@
   with_items:
     - { name: development, description: "Development instance, no SLA" }
     - { name: rhel7, description: "RHEL7 OS" }
+  delegate_to: localhost
 
 - name: Get info about tag
   vmware_tag_info:
     hostname: "{{ vcenter_hostname }}"
     username: "{{ vcenter_username }}"
     password: "{{ vcenter_password }}"
+  delegate_to: localhost
 
 - name: Add RHEL7 and Development Tags onto Virtual Machine
   vmware_tag_manager:
@@ -51,3 +55,4 @@
     object_name: dev-rhel8-ha-1
     object_type: VirtualMachine
     state: add
+  delegate_to: localhost
