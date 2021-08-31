@@ -1,0 +1,9 @@
+---
+- name: Ensure node is subscribed
+  redhat_subscription: 
+    state: present
+    org_id: "{{ org }}"
+    activationkey: "{{ activationkey }}"
+    auto_attach: true
+  when: ansible_os_family == 'RedHat'
+  tags: [never, rhel]

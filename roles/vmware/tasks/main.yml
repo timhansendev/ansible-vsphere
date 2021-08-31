@@ -1,53 +1,96 @@
 ---
-- name: Clone the template
+- name: Create Tags
+  include_tasks: create_tags.yml
+
+- name: Clone the template to create VM's
   vmware_guest:
     hostname: "{{ vcenter_hostname }}"
     username: "{{ vcenter_username }}"
     password: "{{ vcenter_password }}"
     validate_certs: False
-    name: RHEL7_AnsibleHost1
-    template: RHEL7_Template
+    name: "{{ item }}"
+    template: rhel8-template
     datacenter: "{{ datacenter_name }}"
     state: poweredon
     folder: /
     cluster: "{{ cluster_name }}"
-    wait_for_ip_address: yes
+  delegate_to: localhost
+  loop: 
+    - "dev-rhel8-1"
+    - "dev-rhel8-2"
+    - "dev-rhel8-3"
+  async: 1800
+  poll: 2
+  tags: [never, deploy]
 
-- name: Get category ID for "All objects"
-  vmware_category:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    category_name: "All objects"
-  register: catid
-
-- name: Create a tag
-  vmware_tag:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-    tag_name: "{{ item.name }}"
-    category_id: "{{ catid.category_results.category_id }}"
-    tag_description: "{{ item.description }}"
-    state: present
-  with_items:
-    - { name: development, description: "Development instance, no SLA" }
-    - { name: rhel7, description: "RHEL7 OS" }
-
-- name: Get info about tag
-  vmware_tag_info:
-    hostname: "{{ vcenter_hostname }}"
-    username: "{{ vcenter_username }}"
-    password: "{{ vcenter_password }}"
-
-- name: Add RHEL7 and Development Tags onto Virtual Machine
+- name: Add RHEL8 and Development Tags onto Virtual Machines
   vmware_tag_manager:
     hostname: "{{ vcenter_hostname }}"
     username: "{{ vcenter_username }}"
     password: "{{ vcenter_password }}"
     tag_names:
       - development
-      - rhel7
-    object_name: RHEL7_AnsibleHost1
+      - rhel8
+    object_name: "{{ item }}"
     object_type: VirtualMachine
     state: add
+  delegate_to: localhost
+  loop: 
+    - "dev-rhel8-1"
+    - "dev-rhel8-2"
+    - "dev-rhel8-3"
+  async: 1800
+  poll: 2
+  tags: [never, deploy]
+
+- name: Delete RHEL8 VMs
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    name: "{{ item }}"
+    state: poweredoff
+  delegate_to: localhost
+  loop: 
+    - "dev-rhel8-1"
+    - "dev-rhel8-2"
+    - "dev-rhel8-3"
+  async: 1800
+  poll: 2
+  tags: [never, delete]
+
+- name: Delete RHEL8 VMs
+  vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: False
+    name: "{{ item }}"
+    state: absent
+  loop: 
+    - "dev-rhel8-1"
+    - "dev-rhel8-2"
+    - "dev-rhel8-3"
+  delegate_to: localhost
+  async: 1800
+  poll: 2
+  tags: [never, delete]
+
+- name: Create a snapshot
+  vmware_guest_snapshot:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    datacenter: "{{ datacenter_name }}"
+    folder: "/{{ datacenter_name }}/vm/"
+    name: "{{ item }}"
+    state: present
+    snapshot_name: "{{ item }}-snap"
+    description: "{{ item }}-snapshot image"
+  delegate_to: localhost
+  loop: 
+    - "dev-rhel8-1"
+    - "dev-rhel8-2"
+    - "dev-rhel8-3"
+  tags: [never, snapshot]

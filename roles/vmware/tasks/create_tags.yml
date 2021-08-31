@@ -1,0 +1,23 @@
+---
+- name: Get category ID for "All objects"
+  vmware_category:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    category_name: "All objects"
+  register: catid
+  delegate_to: localhost
+
+- name: Create a tag
+  vmware_tag:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    tag_name: "{{ item.name }}"
+    category_id: "{{ catid.category_results.category_id }}"
+    tag_description: "{{ item.description }}"
+    state: present
+  loop:
+    - { name: development, description: "Development instance" }
+    - { name: rhel8, description: "RHEL8 OS" }
+  delegate_to: localhost
