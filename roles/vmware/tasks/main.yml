@@ -14,13 +14,12 @@
     state: poweredon
     folder: /
     cluster: "{{ cluster_name }}"
+    wait_for_ip_address: True
   delegate_to: localhost
   loop: 
     - "dev-rhel8-1"
     - "dev-rhel8-2"
     - "dev-rhel8-3"
-  async: 1800
-  poll: 2
   tags: [never, deploy]
 
 - name: Add RHEL8 and Development Tags onto Virtual Machines
@@ -40,7 +39,7 @@
     - "dev-rhel8-2"
     - "dev-rhel8-3"
   async: 1800
-  poll: 2
+  poll: 1
   tags: [never, deploy]
 
 - name: Delete RHEL8 VMs
